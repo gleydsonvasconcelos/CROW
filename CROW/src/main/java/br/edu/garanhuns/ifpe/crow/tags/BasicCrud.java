@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -47,9 +48,7 @@ public class BasicCrud extends SimpleTagSupport{
         
         getJspContext().setAttribute("usedBean", classBean, PageContext.SESSION_SCOPE);
         getJspContext().setAttribute("usedController", classController, PageContext.SESSION_SCOPE);
-        
         JspWriter out = getJspContext().getOut();
-
         out.println("<script src='http://code.jquery.com/jquery-3.1.1.js'></script>"
                 + "<script>$(function(){\n"
                 + "    \n"
@@ -82,5 +81,7 @@ public class BasicCrud extends SimpleTagSupport{
         out.print("<input type='button' value='cadastrar' />");
         out.println("</form>");
     }
+    
+    
     
 }
