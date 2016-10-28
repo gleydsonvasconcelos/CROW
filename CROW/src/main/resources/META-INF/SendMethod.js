@@ -19,6 +19,7 @@ $(function(){
         $.post("GenericInsertServlet",parametros,
         function(data){
             $("#mensagem").html(data);
+            $("#modal-mensagem").modal("show");
         }); 
         });
     
