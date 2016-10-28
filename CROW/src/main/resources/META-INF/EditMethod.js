@@ -4,10 +4,9 @@
  * and open the template in the editor.
  */
 
-
 $(function(){
     
-    $("value='cadastrar'").click(function(){
+    $("value='editar'").click(function(){
        var fields = $("[name]");
     
         var parametros = "";
@@ -16,10 +15,9 @@ $(function(){
             parametros += $(fields[i]).attr("name")+":"+$(fields[i]).val()+";"; 
         }
     
-        $.post("GenericInsertServlet",parametros,
+        $.post("GenericEditServlet",parametros,
         function(data){
             $("#mensagem").html(data);
-            $("#modal-mensagem").modal("show");
         }); 
         });
     
