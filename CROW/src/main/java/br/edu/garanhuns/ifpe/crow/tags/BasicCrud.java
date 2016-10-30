@@ -30,7 +30,7 @@ public class BasicCrud extends SimpleTagSupport{
         this.usedBean = usedBean;
     }
 
-    public void setUsedController(CrowActionController usedActionController) {
+    public void setUsedActionController(CrowActionController usedActionController) {
         this.usedActionController = usedActionController;
     }
     
@@ -81,6 +81,11 @@ public class BasicCrud extends SimpleTagSupport{
         out.print("<input type='button' value='cadastrar' />");
         out.println("</form>");
     }
+
+    /**
+     * @param usedActionController the usedActionController to set
+     */
+    
     
     
     
