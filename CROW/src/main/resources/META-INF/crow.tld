@@ -15,8 +15,9 @@
       </attribute>
       
       <attribute>
-          <name>usedController</name>
+          <name>usedActionController</name>
           <required>true</required>
+          <type>>br.edu.garanhuns.ifpe.crow.interfaces.CrowActionController</type>
           <rtexprvalue>true</rtexprvalue>
       </attribute>
   </tag>
