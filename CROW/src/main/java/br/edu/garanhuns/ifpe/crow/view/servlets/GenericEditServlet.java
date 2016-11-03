@@ -5,10 +5,15 @@
  */
 package br.edu.garanhuns.ifpe.crow.view.servlets;
 
+import br.edu.garanhuns.ifpe.crow.classes.CrudAttribute;
+import br.edu.garanhuns.ifpe.crow.classes.StringUtil;
+import br.edu.garanhuns.ifpe.crow.classes.Utils;
+import br.edu.garanhuns.ifpe.crow.interfaces.CrowActionController;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -22,8 +27,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author 1860915
  */
-
-@WebServlet(name = "GenericEditServlet", urlPatterns = {"/GenericEditServlet"})
+@WebServlet(name = "GenericEditServlet", urlPatterns = {"/GenericEditServlet", "/GenericGetByIdServlet"})
 public class GenericEditServlet extends HttpServlet {
 
     /**
@@ -37,82 +41,42 @@ public class GenericEditServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession();
-        
-        Class usedBean = (Class)session.getAttribute("usedBean");
-        Class usedController = (Class)session.getAttribute("usedController");
-        
-        Object objectBean = null;
-        Object objectController = null;
-        
-        try {
-            objectBean = usedBean.newInstance();
-            objectController = usedController.newInstance();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
-        
-        String parametros[] = request.getParameter("param").split(";");
-        
-        Method[] methods = objectBean.getClass().getMethods();
-        
-        for(String p:parametros){
-            for(Method m:methods){
-                
-                if(m.getName().toLowerCase().contains("set")){
-                    if(m.getName().toLowerCase().contains(p.split(":")[0])){
-                        if(m.getParameterTypes()[0].getTypeName().contains("int")){
-                            try {
-                                m.invoke(objectBean, Integer.parseInt(p.split(":")[1]));
-                            } catch (IllegalAccessException ex) {
-                                ex.printStackTrace();
-                            } catch (IllegalArgumentException ex) {
-                                ex.printStackTrace();    
-                            } catch (InvocationTargetException ex) {
-                                ex.printStackTrace();
-                            }
-                        }else{
-                            try {
-                                m.invoke(objectBean, p.split(":")[1]);
-                            } catch (IllegalAccessException ex) {
-                                Logger.getLogger(GenericEditServlet.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IllegalArgumentException ex) {
-                                Logger.getLogger(GenericEditServlet.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InvocationTargetException ex) {
-                                Logger.getLogger(GenericEditServlet.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        }
-                    }
+
+        Class usedBean = (Class) session.getAttribute("usedBean");
+        CrowActionController usedController = (CrowActionController) session.getAttribute("usedController");
+
+        String path = request.getServletPath();
+
+        if (path.equals("/GenericGetByIdServlet")) {
+            Object bean = usedController.getById(Integer.parseInt(request.getParameter("id")));
+            List<CrudAttribute> atributos = Utils.getBeanNames(usedBean);
+            Method m;
+            for (CrudAttribute a : atributos) {
+                try {
+                    m = usedBean.getDeclaredMethod("get" + StringUtil.upperCaseFirst(a.getName()), null);
+                    request.setAttribute(a.getName(), m.invoke(bean));
+
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                } catch (IllegalArgumentException ex) {
+                    ex.printStackTrace();
+                } catch (InvocationTargetException ex) {
+                    ex.printStackTrace();
+                } catch (NoSuchMethodException ex) {
+                    Logger.getLogger(GenericServlet.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (SecurityException ex) {
+                    Logger.getLogger(GenericServlet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
+
             }
-        }
-        
-        Method controllerMethod;
-        try {
-            controllerMethod = objectController.getClass().getDeclaredMethod("update",Object.class);
-            
-            controllerMethod.invoke(objectController, objectBean);
-        } catch (NoSuchMethodException ex) {
-            ex.printStackTrace();
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (InvocationTargetException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        }
-        
-        
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("Cadastrado com Sucesso");
+
+            response.setContentType("text/html;charset=UTF-8");
+            try (PrintWriter out = response.getWriter()) {
+                /* TODO output your page here. You may use following sample code. */
+                out.println("Funcionou!!!");
+            }
         }
     }
 

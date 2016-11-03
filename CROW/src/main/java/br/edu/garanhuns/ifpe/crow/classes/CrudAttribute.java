@@ -11,8 +11,9 @@ package br.edu.garanhuns.ifpe.crow.classes;
  */
 public class CrudAttribute {
     private String name;
-    private String type;
+    private Class type;
     private boolean id;
+    
 
     /**
      * @return the name
@@ -31,14 +32,14 @@ public class CrudAttribute {
     /**
      * @return the type
      */
-    public String getType() {
+    public Class getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    public void setType(String type) {
+    public void setType(Class type) {
         this.type = type;
     }
 

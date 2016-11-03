@@ -1,10 +1,14 @@
 package br.edu.garanhuns.ifpe.crow.tags;
 
 import br.edu.garanhuns.ifpe.crow.classes.CrudElements;
+import br.edu.garanhuns.ifpe.crow.classes.Utils;
 import br.edu.garanhuns.ifpe.crow.interfaces.CrowActionController;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
@@ -35,7 +39,7 @@ public class BasicCrud extends SimpleTagSupport {
     public void doTag() throws IOException {
         Class classBean = null;
         CrowActionController classController = null;
-
+        
         try {
             classBean = Class.forName(usedBean);
             classController = usedActionController;
@@ -52,8 +56,9 @@ public class BasicCrud extends SimpleTagSupport {
         
         StringBuilder sb = new StringBuilder();
         
-        BufferedReader br = new BufferedReader(new FileReader("C:\\Users\\Gleydson\\Documents\\NetBeansProjects\\CROW\\CROW\\src\\main\\resources\\META-INF\\resources\\templates\\crud.ftlh"));
-
+        InputStream in = getClass().getResourceAsStream("/META-INF/resources/templates/crud.ftlh");
+        
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
         while (br.ready()) {
             String linha = br.readLine();
             sb.append(linha);
@@ -63,8 +68,8 @@ public class BasicCrud extends SimpleTagSupport {
         String s = sb.toString();
         
         s = s.replace("${table}", elements.list(classBean, usedActionController.list()));
-        s = s.replace("${dialogUpdate}", elements.modalUpdate(classBean, "/GenericServletUpdate", "POST"));
-        s = s.replace("${dialogInsert}", elements.modalCreate(classBean, "/GenericServletInsert", "POST"));
+        s = s.replace("${dialogUpdate}", elements.modalUpdate(classBean, "", "GenericServletUpdate"));
+        s = s.replace("${dialogInsert}", elements.modalCreate(classBean, "",  "GenericInsertServlet"));
         
         out.println(s);
 

@@ -16,6 +16,7 @@
         <script src="templates/src/bootstrap/js/bootstrap.js"></script>
         <script src="templates/src/js/crow.js"></script>
 
+		
         <title>Crow - A simple CRUD framework</title>
     </head>
     <body>

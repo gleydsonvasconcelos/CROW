@@ -5,6 +5,10 @@
  */
 package br.edu.garanhuns.ifpe.crow.classes;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author casa01
@@ -20,4 +24,6 @@ public class StringUtil {
 	// Return string.
 	return new String(array);
     }
+    
+ 
 }

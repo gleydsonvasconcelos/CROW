@@ -256,13 +256,8 @@ public class CrudElements<T> {
 
     public String list(Class classBean, List<T> list) {
 
-        List<String> atributtes = new ArrayList<String>();
-        Field[] fields = classBean.getDeclaredFields();
-        
-        for (Field f : fields) {
-            atributtes.add(f.getName());
-        }
-
+        List<CrudAttribute> atributtes = Utils.getBeanNames(classBean);
+        Method methID;
         StringBuilder sb = new StringBuilder();
         sb.append("<div class=\"container\">");
         sb.append("<div class=\"row\">");
@@ -274,9 +269,9 @@ public class CrudElements<T> {
 
         sb.append("<thead>");
         sb.append("<tr>");
-        for (String value : atributtes) {
+        for (CrudAttribute value : atributtes) {
             sb.append("<th>");
-            sb.append(value);
+            sb.append(value.getName());
             sb.append("</th>");
         }
         
@@ -289,10 +284,10 @@ public class CrudElements<T> {
         for (Object objectBean : list) {
             sb.append("<tbody>");
             sb.append("<tr>");
-            for (String atributte : atributtes) {
+            for (CrudAttribute atributte : atributtes) {
                 Method meth;
                 try {
-                    meth = classBean.getMethod("get" + StringUtil.upperCaseFirst(atributte));
+                    meth = classBean.getMethod("get" + StringUtil.upperCaseFirst(atributte.getName()));
                     String value = String.valueOf(meth.invoke(objectBean)).equals("null") ? "" : String.valueOf(meth.invoke(objectBean));
 
                     sb.append("<td>");
@@ -305,8 +300,26 @@ public class CrudElements<T> {
                 }
 
             }
+            
+            String valueID=null;
+            try {
+                methID = classBean.getMethod("get" + StringUtil.upperCaseFirst(atributtes.get(0).getName()));
+                
+                valueID = String.valueOf(methID.invoke(objectBean)).equals("null") ? "" : String.valueOf(methID.invoke(objectBean));
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(CrudElements.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                Logger.getLogger(CrudElements.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                Logger.getLogger(CrudElements.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                Logger.getLogger(CrudElements.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                Logger.getLogger(CrudElements.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             sb.append("<td>");
-            sb.append("<a href=\"  \" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"right\" title=\"Editar\">");
+            sb.append("<a href=\"GenericGetByIdServlet?id="+valueID+"\" class=\"tooltips\" data-toggle=\"tooltip\" data-placement=\"right\" title=\"Editar\">");
             sb.append("<div class=\"table-ops editar\"></div>");
             sb.append("</a>");
 
